@@ -1,19 +1,15 @@
-from crypto import cryptograph
 from rich.prompt import Prompt
+from rich.panel import Panel
 from rich import print
-import typer
-key = "key"
-username = "username"
-pin = 1234
-username = Prompt.ask("[bold white]Enter username")
-pin = int(Prompt.ask("[bold white]Enter Pin"))
-key = username + str(pin)
-# print(key)
-# temp_key = ""
-# for i in key:
-#     temp_key = temp_key + str(ord(i))
+from crypto import cryptograph 
 
-# key = temp_key
-# print(key)
-obj = cryptograph.abc(username=username,pin=pin)
-obj.keymake()
+username = Prompt.ask("Enter your username")
+pin = int(Prompt.ask("Enter your pin"))
+password = "defaultpassword"
+key = "00111"
+
+
+key = cryptograph.Cryptography(username,pin,password).makekey()
+print(key[2:])
+password = "hello1234"
+password = cryptograph.Cryptography(username,pin,password).xorthese(password)
