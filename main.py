@@ -19,7 +19,9 @@ def keymake():
     key = bin(int(key))
     print(key)
 
+
 if __name__=="main":
     username = Prompt.ask("[bold white]Enter username")
     pin = int(Prompt.ask("[bold white]Enter Pin"))
     keymake()
+    
