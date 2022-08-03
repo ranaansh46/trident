@@ -9,7 +9,16 @@ password = "defaultpassword"
 key = "00111"
 
 
-key = cryptograph.Cryptography(username,pin,password).makekey()
-print(key[2:])
-password = "hello1234"
-password = cryptograph.Cryptography(username,pin,password).xorthese(password)
+# key = cryptograph.Cryptography(username,pin,password).makekey()
+# print(key[2:])
+# password = "hello1234"
+# passwd = cryptograph.Cryptography(username)
+# key = passwd.makekey()
+
+_init_crypto = cryptograph.Cryptography(username,pin)
+
+_key = _init_crypto.makekey()
+
+_xor_passwd = _init_crypto.xorthese(password,_key)
+
+print(_xor_passwd)
