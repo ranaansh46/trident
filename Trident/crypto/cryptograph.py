@@ -26,7 +26,17 @@ class Cryptography:
         self.key = key[2:]
         password = Cryptography.binthis(tri=password)
         password = password[2:]
-        for i in range(len(key)-2):
+        if len(password) > len(self.key):
+            lenfor0 = len(password) - len(self.key)
+            self.key +='0'*lenfor0
+        else:
+            lenfor0 = len(self.key)-len(password)
+            password += '0'*lenfor0
+        
+        print(len(password),password)
+        print(len(self.key),self.key)
+
+        for i in range(len(self.key)):
             if(self.key[i]==password[i]):
                 result += "0"
             else:
