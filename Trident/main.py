@@ -5,9 +5,7 @@ from crypto import cryptograph
 
 username = Prompt.ask("Enter your username")
 pin = int(Prompt.ask("Enter your pin"))
-password = "defaultpassword"
-key = "00111"
-
+password = Prompt.ask("Enter your password")
 
 # key = cryptograph.Cryptography(username,pin,password).makekey()
 # print(key[2:])
