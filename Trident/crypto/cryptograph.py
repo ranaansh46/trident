@@ -1,3 +1,4 @@
+import binascii
 class Cryptography:
     def __init__(self,username,pin) -> None:
         self.username = username
@@ -42,3 +43,7 @@ class Cryptography:
             else:
                 result += "1"
         return result
+
+    def charthis(self,dent):
+        temp_string = bytes(dent[2:],"ascii")
+        return binascii.b2a_uu(temp_string)
