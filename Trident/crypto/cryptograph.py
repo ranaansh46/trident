@@ -1,5 +1,5 @@
 class Cryptography:
-    def __init__(self,username,pin,password) -> None:
+    def __init__(self,username,pin) -> None:
         self.username = username
         self.pin = pin
         self.tri = "key"
@@ -21,11 +21,11 @@ class Cryptography:
         key = Cryptography.binthis(tri=key)
         return key
     
-    def xorthese(password):
+    def xorthese(self,password,key):
         result = ""
         self.key = key[2:]
         password = Cryptography.binthis(tri=password)
-        password = password[2,]
+        password = password[2:]
         for i in range(len(key)-2):
             if(self.key[i]==password[i]):
                 result += "0"
