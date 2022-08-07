@@ -19,6 +19,11 @@ class Database0x:
         self.cur.execute(f'SELECT * FROM "user" WHERE "Sno" ={sno}')
         _sno ,_websitename ,_xorp = self.cur.fetchone()
         return _sno , _websitename , _xorp
+
+    def returnsno(self):
+        self.cur.execute('SELECT * FROM  "user" ORDER BY "Sno" DESC LIMIT 1')
+        _sno,_,_ = self.cur.fetchone()
+        return _sno
     def __exit__(self):
         self.conn.close()
     
