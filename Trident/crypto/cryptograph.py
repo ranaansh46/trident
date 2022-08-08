@@ -11,7 +11,7 @@ class Cryptograph:
     def makekey(self): #this function makes binary key using two arguments
         # 1st = username which is a string argument  
         # 2nd = Pin which is an integer argument and makes a binary key using both of these
-        key = self.username + str(self.pin)
+        key =str(self.pin) + self.username 
         _key = Cryptograph.binthis(self,tri=key)
         return _key
     

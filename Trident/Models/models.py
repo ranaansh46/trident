@@ -1,4 +1,5 @@
 import sqlite3
+
 class Database0x:
     def __init__(self,datadb="username"):
         self.conn = sqlite3.connect(f"{datadb}.db")
@@ -13,6 +14,10 @@ class Database0x:
 
     def deletevalue(self,id:int):
         self.cur.execute(f'DELETE FROM "user" WHERE "Sno" = {id}')
+        _id =id
+        for i in range(id,Database0x.returnsno(self)):
+            self.cur.execute(f'UPDATE "user" SET "Sno"= {i} WHERE "Sno" = {_id+1}')
+            _id+=1
         self.conn.commit()
 
     def returnvalue(self,sno:int):
