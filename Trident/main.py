@@ -1,3 +1,4 @@
+import string
 from rich.prompt import Prompt
 from rich.panel import Panel
 import rich,os
@@ -5,18 +6,36 @@ from crypto import cryptograph
 from Models import models
 from rich.table import Table
 from rich.console import Console
+from re import compile, search
+
 
 def signup():
-    ch=1
-    while ch!=0:
+    x = compile('[@_!#$%^&*()<>?/\|}{~:]')
+    while True:
         username = Prompt.ask("Enter username")
-        pin = int(Prompt.ask("Enter your pin"))
+
+        if len(username)<6:
+            print("Username must have atleast 6 characters!")
+            continue
+        if (x.search(username)):
+            print("special characters not allowed!")
+            continue
         if os.path.isfile(f"{username}.db"):
             Prompt("username already exists please select another username")
-        else:
+            continue
+        else :
             db = models.Database0x(username)
-            return db,username,pin
-        ch=0
+            break
+            
+    while True:
+        pin = int(Prompt.ask("Enter your pin"))   
+        if len(str(pin))<4:
+            print("pin must have atleast 4 characters!")
+            continue
+        else:
+            break        
+    return db,username,pin
+
 
 def signin():
     ch=1
