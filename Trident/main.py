@@ -1,5 +1,3 @@
-from statistics import mode
-from xml.parsers.expat import model
 from rich.prompt import Prompt
 from rich.panel import Panel
 import rich,os
@@ -18,7 +16,7 @@ def signup():
         else:
             db = models.Database0x(username)
             return db,username,pin
-            ch=0
+        ch=0
 
 def signin():
     ch=1
@@ -27,8 +25,8 @@ def signin():
         pin = int(Prompt.ask("Enter your pin"))
         if os.path.isfile(f"{username}.db"):
             db = models.Database0x(username)
-            return db,username,pin
             ch=0
+            return db,username,pin
         else:
             choice = Prompt.ask("Username Invalid! [bold]Signup : S or Retry : R[/bold]",choices=["s","r"],default="r")
             if choice == "s":
@@ -53,14 +51,14 @@ def addpasswd(username,pin,db,check:bool=True):
 
 def rempasswd(username,pin,db):
     showpasswd(db, username, pin)
-    sno = input("Enter S.no for the password you want to remove")
+    sno = int(input("Enter S.no for the password you want to remove: "))
     db.deletevalue(sno)
 
 def showpasswd(db,username,pin):
     _init_crypto = cryptograph.Cryptograph(username, pin)
     table = Table(title="List of your password")
-    table.add_column("S.no",style="cyan")
-    table.add_column("Website",style="magenta")
+    table.add_column("S.no",style="#FFA500")
+    table.add_column("[blue]Website[/blue]",style="white")
     table.add_column("Passwords",style="green")
     i = db.returnsno()
     _key = _init_crypto.makekey()
@@ -73,9 +71,8 @@ def showpasswd(db,username,pin):
     console.print(table)
         
 
-
 if __name__ == "__main__":
-    rich.print(Panel("[bold white]Welcome to Trident Password Manager",subtitle="TPM version 0.0.1"))
+    rich.print(Panel("[bold white]Welcome to Trident Password Manager",subtitle="TPM version 0.0.1 alpha"))
     choice = Prompt.ask("Choose Signup : u or Signin : i",choices=["u","i"], default="u")
     if choice == "u": #this is sign up section
         db,username,pin = signup()
@@ -87,29 +84,26 @@ if __name__ == "__main__":
             choice = Prompt.ask("add more : a or Save and exit : s",choices=['a','s'],default='s')
             if choice == 'a':
                 addpasswd(username, pin, db)
+                showpasswd(db,username,pin)
             else:
                 ch=0
 
     else: #this is sign in section
-        ch=1
-        while ch!=0:
-                db,username,pin = signin()
-                ech=1
-                while ech!=0:
-                    choice = Prompt.ask("Edit : e or Show : s  or Exit : x",choices=['e','s','x'],default='s')
-                    hc = 1
-                    while hc!=0:
-                        if choice == 'e':
-                            choice = Prompt.ask("Add : a or Remove : r or Exit : e",choices=['a','r','x'])
-                            if choice=='a':
-                                addpasswd(username, pin, db)
-                            elif choice=='r':
-                                rempasswd(username, pin, db)
-                            else:
-                                hc=0
-                                exit(0)
-                    if choice == 's':
-                        showpasswd(db, username, pin)
+        db,username,pin = signin()
+        while True:
+            choice = Prompt.ask("Show: s / Edit: e / Exit: x",choices=['s','e','x'],default='s')
+            if choice == 's':
+                showpasswd(db,username,pin)
+            elif choice == 'e':
+                while True:
+                    _choice = Prompt.ask("Add: a / Remove: r / Back: b",choices=['a','r','b'],default='b')
+                    if _choice == 'a':
+                        addpasswd(username,pin,db)
+                        showpasswd(db,username,pin)        
+                    elif _choice == 'r':
+                        rempasswd(username,pin,db)
+                        showpasswd(db,username,pin)
                     else:
-                        ech=0
-                ch=0
+                        break
+            else:
+                break
