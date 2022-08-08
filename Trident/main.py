@@ -51,6 +51,11 @@ def addpasswd(username,pin,db,check:bool=True):
     _xor_passwd= _init_crypto.xorthese(password,_key)
     db.intovalue(_sno,website,_xor_passwd)
 
+def rempasswd(username,pin,db):
+    showpasswd(db, username, pin)
+    sno = input("Enter S.no for the password you want to remove")
+    db.deletevalue(sno)
+
 def showpasswd(db,username,pin):
     _init_crypto = cryptograph.Cryptograph(username, pin)
     table = Table(title="List of your password")
@@ -58,13 +63,14 @@ def showpasswd(db,username,pin):
     table.add_column("Website",style="magenta")
     table.add_column("Passwords",style="green")
     i = db.returnsno()
-    for x in range(i):
+    _key = _init_crypto.makekey()
+    for x in range(1,i+1):
         s,w,p = db.returnvalue(x)
-        _p = _init_crypto.binxor(p,_init_crypto.makekey(username,pin))
+        _p = _init_crypto.binxor(p,_key)
         _p = _init_crypto.charthis(_p)
-        table.add_row(s,w,_p)
-        console = Console()
-        console.print(table)
+        table.add_row(str(s),str(w),str(_p))
+    console = Console()
+    console.print(table)
         
 
 
@@ -90,10 +96,20 @@ if __name__ == "__main__":
                 db,username,pin = signin()
                 ech=1
                 while ech!=0:
-                    addpasswd(username,pin,db)
-                    choice = Prompt.ask("add more : a or Save and exit : s",choices=['a','s'],default='s')
-                    if choice == 'a':
-                        pass
+                    choice = Prompt.ask("Edit : e or Show : s  or Exit : x",choices=['e','s','x'],default='s')
+                    hc = 1
+                    while hc!=0:
+                        if choice == 'e':
+                            choice = Prompt.ask("Add : a or Remove : r or Exit : e",choices=['a','r','x'])
+                            if choice=='a':
+                                addpasswd(username, pin, db)
+                            elif choice=='r':
+                                rempasswd(username, pin, db)
+                            else:
+                                hc=0
+                                exit(0)
+                    if choice == 's':
+                        showpasswd(db, username, pin)
                     else:
-                        ech=0    
+                        ech=0
                 ch=0
