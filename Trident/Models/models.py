@@ -6,10 +6,10 @@ class Database0x:
         self.cur = self.conn.cursor()
         
     def createtable(self):
-        self.cur.execute('CREATE TABLE "user" ("Sno" int PRIMARY KEY,"website_name" text,"password" text)')
+        self.cur.execute('CREATE TABLE "user" ("Sno" int PRIMARY KEY,"website_name" text,"username" text, "password" text)')
 
-    def intovalue(self,sno,websitename,password):
-        self.cur.execute(f'INSERT INTO "user" VALUES({sno},"{websitename}","{password}")')
+    def intovalue(self,sno,websitename,_username,password):
+        self.cur.execute(f'INSERT INTO "user" VALUES({sno},"{websitename}","{_username}","{password}")')
         self.conn.commit()
 
     def deletevalue(self,id:int):
@@ -22,13 +22,25 @@ class Database0x:
 
     def returnvalue(self,sno:int):
         self.cur.execute(f'SELECT * FROM "user" WHERE "Sno" ={sno}')
-        _sno ,_websitename ,_xorp = self.cur.fetchone()
-        return _sno , _websitename , _xorp
+        _sno ,_websitename ,_username, _xorp = self.cur.fetchone()
+        return _sno , _websitename ,_username, _xorp
 
     def returnsno(self):
         self.cur.execute('SELECT * FROM  "user" ORDER BY "Sno" DESC LIMIT 1')
-        _sno,_,_ = self.cur.fetchone()
+        _sno,_,_,_ = self.cur.fetchone()
         return _sno
+    
+    # for master password
+    
+    def createmasterpwd(self,_hash):
+        self.cur.execute('CREATE TABLE "masterpass" ("Sno" int PRIMARY KEY,"password" text)') 
+        self.cur.execute(f'INSERT INTO "masterpass" VALUES(0,"{_hash}")')
+    
+    def returnhash(self):
+        self.cur.execute('SELECT * FROM  "masterpass"')
+        _,_hash = self.cur.fetchone()
+        return _hash
+    
     def __exit__(self):
         self.conn.close()
     
