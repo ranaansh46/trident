@@ -7,7 +7,7 @@ from Models import models
 from rich.table import Table
 from rich.console import Console
 from re import compile, search
-
+from hashlib import sha256
 
 def signup():
     x = compile('[@_!#$%^&*()<>?/\|}{~:]')
@@ -26,7 +26,18 @@ def signup():
         else :
             db = models.Database0x(username)
             break
-            
+    
+    while True:
+        masterpassword = Prompt.ask("Enter master password")
+       
+        if len(masterpassword)<8:
+            print("Username must have atleast 8 characters!")
+            continue
+        else:
+            _hash = sha256(masterpassword.encode('utf-8')).hexdigest()
+            db.createmasterpwd(_hash)
+            break  
+    
     while True:
         pin = int(Prompt.ask("Enter your pin"))   
         if len(str(pin))<4:
@@ -38,21 +49,31 @@ def signup():
 
 
 def signin():
-    ch=1
-    while ch!=0:
+    # ch=1
+    while True:
         username = Prompt.ask("Enter username")
-        pin = int(Prompt.ask("Enter your pin"))
+        # masterpassword = Prompt.ask("Enter master password")
+        # pin = int(Prompt.ask("Enter your pin"))
         if os.path.isfile(f"{username}.db"):
             db = models.Database0x(username)
-            ch=0
-            return db,username,pin
+            # ch=0
+            # return db,username,pin
+            masterpassword = Prompt.ask("Enter master password")
+            _hash = sha256(masterpassword.encode('utf-8')).hexdigest()
+            if _hash == db.returnhash():
+                pin = int(Prompt.ask("Enter your pin"))
+                return db,username,pin
+            else:
+                Prompt("[RED BOLD]Wrong credentials!!")
+                continue
+            
         else:
             choice = Prompt.ask("Username Invalid! [bold]Signup : S or Retry : R[/bold]",choices=["s","r"],default="r")
             if choice == "s":
                db = signup()
                return db,username,pin
             else:
-                ch=1
+                continue
 
 def addpasswd(username,pin,db,check:bool=True):
     if check:
@@ -62,11 +83,12 @@ def addpasswd(username,pin,db,check:bool=True):
         __sno = 0
     _sno = __sno + 1
     website = Prompt.ask("Enter website name")
+    _username = Prompt.ask("Enter username for website")
     password = Prompt.ask("Enter password")
     _init_crypto = cryptograph.Cryptograph(username,pin)
     _key = _init_crypto.makekey()
     _xor_passwd= _init_crypto.xorthese(password,_key)
-    db.intovalue(_sno,website,_xor_passwd)
+    db.intovalue(_sno,website,_username,_xor_passwd)
 
 def rempasswd(username,pin,db):
     showpasswd(db, username, pin)
@@ -76,22 +98,23 @@ def rempasswd(username,pin,db):
 def showpasswd(db,username,pin):
     _init_crypto = cryptograph.Cryptograph(username, pin)
     table = Table(title="List of your password")
-    table.add_column("S.no",style="#FFA500")
+    table.add_column("[blue]S.no[/blue]",style="#FFA500")
     table.add_column("[blue]Website[/blue]",style="white")
-    table.add_column("Passwords",style="green")
+    table.add_column("[blue]Username[/blue]")
+    table.add_column("[blue]Passwords[/blue]",style="green")
     i = db.returnsno()
     _key = _init_crypto.makekey()
     for x in range(1,i+1):
-        s,w,p = db.returnvalue(x)
+        s,w,u,p = db.returnvalue(x)
         _p = _init_crypto.binxor(p,_key)
         _p = _init_crypto.charthis(_p)
-        table.add_row(str(s),str(w),str(_p))
+        table.add_row(str(s),str(w),str(u),str(_p))
     console = Console()
     console.print(table)
         
 
 if __name__ == "__main__":
-    rich.print(Panel("[bold white]Welcome to Trident Password Manager",subtitle="TPM version 0.0.1 alpha"))
+    rich.print(Panel.fit("[bold white]Welcome to Trident Password Manager",subtitle="TPM version 0.0.1 alpha"))
     choice = Prompt.ask("Choose Signup : u or Signin : i",choices=["u","i"], default="u")
     if choice == "u": #this is sign up section
         db,username,pin = signup()
