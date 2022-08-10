@@ -1,37 +1,51 @@
-import string
-from rich.prompt import Prompt
-from rich.panel import Panel
-import rich,os
 from crypto import cryptograph 
 from Models import models
+
+import string,rich,os
+
+from rich.prompt import Prompt
+from rich.panel import Panel
 from rich.table import Table
 from rich.console import Console
+from rich import print
+
+#Used for Hashing
 from re import compile, search
 from hashlib import sha256
 
 def signup():
+    """ Summary:
+    This function is used to initiate database class and read username, pin and master password then writes
+    hash of master password in the database file then returns username , pin and db object. 
+
+    Returns:
+        Object : db object is returned, this object is used to add, remove and show passwords.
+        String : Username string is returned, this object is used as the database file name and part of the key.
+        Int : pin is returned this number is later used as part of key.
+    """
+    print("[bold red]Important! please note your pin and master password as you cannot change them in future") 
     x = compile('[@_!#$%^&*()<>?/\|}{~:]')
     while True:
-        username = Prompt.ask("Enter username")
+        username = Prompt.ask("[bold]Enter username")
 
         if len(username)<6:
-            print("Username must have atleast 6 characters!")
+            print("[red]Username must have atleast 6 characters!")
             continue
         if (x.search(username)):
-            print("special characters not allowed!")
+            print("[red]special characters not allowed!")
             continue
         if os.path.isfile(f"{username}.db"):
-            print("username already exists please select another username")
+            print("[red]username already exists please select another username")
             continue
         else :
             db = models.Database0x(username)
             break
     
     while True:
-        masterpassword = Prompt.ask("Enter master password")
+        masterpassword = Prompt.ask("[bold]Enter master password[/bold]")
        
         if len(masterpassword)<8:
-            print("Username must have atleast 8 characters!")
+            print("Master password must have atleast 8 characters!")
             continue
         else:
             _hash = sha256(masterpassword.encode('utf-8')).hexdigest()
@@ -39,43 +53,52 @@ def signup():
             break  
     
     while True:
-        pin = int(Prompt.ask("Enter your pin"))   
+        pin = int(Prompt.ask("[bold]Enter your pin[/bold]"))   
         if len(str(pin))<4:
             print("pin must have atleast 4 characters!")
             continue
         else:
-            break        
+            break       
     return db,username,pin
 
-
 def signin():
-    # ch=1
+    """ Summary: This is function reads username, pin and master password it confirms the master password from the database and then returns 
+    
+    Returns:
+        Object : db object is returned, this object is used to add, remove and show passwords.
+        String : Username string is returned, this object is used as the database file name and part of the key.
+        Int : pin is returned this number is later used as part of key.
+    """
     while True:
-        username = Prompt.ask("Enter username")
-        # masterpassword = Prompt.ask("Enter master password")
-        # pin = int(Prompt.ask("Enter your pin"))
-        if os.path.isfile(f"{username}.db"):
+        username = Prompt.ask("[bold]Enter username")
+        if os.path.isfile(f"{username}.db"): #to check is  database file  for username already exists
             db = models.Database0x(username)
-            # ch=0
-            # return db,username,pin
-            masterpassword = Prompt.ask("Enter master password")
+            masterpassword = Prompt.ask("[bold]Enter master password")
             _hash = sha256(masterpassword.encode('utf-8')).hexdigest()
             if _hash == db.returnhash():
-                pin = int(Prompt.ask("Enter your pin"))
+                pin = int(Prompt.ask("[bold]Enter your pin"))
                 return db,username,pin
             else:
                 rich.print("[red bold]Wrong credentials!!")
                 continue
             
         else:
-            choice = Prompt.ask("Username Invalid! [bold]Signup : S or Retry : R[/bold]",choices=["s","r"],default="r")
+            choice = Prompt.ask("[bold red]Username Invalid![/bold red] [bold]Signup : S or Retry : R[/bold]",choices=["s","r"],default="r")
             if choice == "s":
-               db = signup()
+               db,username,pin = signup()
                return db,username,pin
             else:
                 continue
 
 def addpasswd(username,pin,db,check:bool=True):
+    """This password reads website name , username for website, password and writes it in the database file
+
+    Args:
+        username (String): Username entered by user at signin/signup used in key
+        pin (Int): pin entered by user at signin/signup used in key 
+        db (Object): this object is used to pass values in the database
+        check (bool, optional): this check is used to avoid the no entry error when new user writes password. Defaults to True.
+    """
     if check:
         __sno = db.returnsno()
     else:
@@ -90,6 +113,15 @@ def addpasswd(username,pin,db,check:bool=True):
     db.intovalue(_sno,website,_username,_xor_passwd)
 
 def rempasswd(username,pin,db):
+    """
+    Summary: 
+    
+
+    Args:
+        username (_type_): _description_
+        pin (_type_): _description_
+        db (_type_): _description_
+    """
     showpasswd(db, username, pin)
     sno = int(input("Enter S.no for the password you want to remove: "))
     db.deletevalue(sno)
@@ -115,7 +147,7 @@ def showpasswd(db,username,pin):
 if __name__ == "__main__":
     rich.print(Panel.fit("[bold white]Welcome to Trident Password Manager",subtitle="TPM version 0.0.1 alpha"))
     choice = Prompt.ask("Choose Signup : u or Signin : i",choices=["u","i"], default="u")
-    if choice == "u": #this is sign up section
+    if choice == "u": #this is sign up section of the program
         db,username,pin = signup()
         sno = 0
         ch = 1
