@@ -21,7 +21,7 @@ def signup():
             print("special characters not allowed!")
             continue
         if os.path.isfile(f"{username}.db"):
-            Prompt("username already exists please select another username")
+            print("username already exists please select another username")
             continue
         else :
             db = models.Database0x(username)
@@ -64,7 +64,7 @@ def signin():
                 pin = int(Prompt.ask("Enter your pin"))
                 return db,username,pin
             else:
-                Prompt("[RED BOLD]Wrong credentials!!")
+                rich.print("[red bold]Wrong credentials!!")
                 continue
             
         else:
@@ -78,7 +78,6 @@ def signin():
 def addpasswd(username,pin,db,check:bool=True):
     if check:
         __sno = db.returnsno()
-        rich.print(__sno)
     else:
         __sno = 0
     _sno = __sno + 1
