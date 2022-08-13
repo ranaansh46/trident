@@ -13,6 +13,10 @@ from rich import print
 from re import compile, search
 from hashlib import sha256
 
+#for generating password
+import random
+import secrets
+
 def signup():
     """ Summary:
     This function is used to initiate database class and read username, pin and master password then writes
@@ -90,6 +94,22 @@ def signin():
             else:
                 continue
 
+def passGenerator():
+    specialCharacters = "!@#$%^&*"
+    numberOfUpperCase = 4
+    numberOfLowerCase = 4
+    numberOfDigits = 4
+    numberOfSpecialCharacters = 4
+    randomUppercase = ''.join(secrets.choice(string.ascii_uppercase) for _ in range(numberOfUpperCase))
+    randomLowercase = ''.join(secrets.choice(string.ascii_lowercase) for _ in range(numberOfLowerCase))
+    randomDigits = ''.join(secrets.choice(string.digits) for _ in range(numberOfDigits))
+    randomSpecialCharacters = ''.join(secrets.choice(specialCharacters) for _ in range(numberOfSpecialCharacters))
+
+    tempStr = randomUppercase + randomLowercase + randomDigits + randomSpecialCharacters
+    finalString = list(tempStr)
+    random.shuffle(finalString)
+    return ''.join(finalString)
+
 def addpasswd(username,pin,db,check:bool=True):
     """This password reads website name , username for website, password and writes it in the database file
 
@@ -106,7 +126,12 @@ def addpasswd(username,pin,db,check:bool=True):
     _sno = __sno + 1
     website = Prompt.ask("Enter website name")
     _username = Prompt.ask("Enter username for website")
-    password = Prompt.ask("Enter password")
+    choice = Prompt.ask("Generate Password : g or enter mannualy : m",choices=['g','m'],default='g')
+    if choice == 'g':
+        password = passGenerator()
+        rich.print("Generated password : ",password)
+    elif choice == 'm':
+        password = Prompt.ask("Enter password")
     _init_crypto = cryptograph.Cryptograph(username,pin)
     _key = _init_crypto.makekey()
     _xor_passwd= _init_crypto.xorthese(password,_key)

@@ -35,6 +35,7 @@ class Database0x:
     def createmasterpwd(self,_hash):
         self.cur.execute('CREATE TABLE "masterpass" ("Sno" int PRIMARY KEY,"password" text)') 
         self.cur.execute(f'INSERT INTO "masterpass" VALUES(0,"{_hash}")')
+        self.conn.commit()
     
     def returnhash(self):
         self.cur.execute('SELECT * FROM  "masterpass"')
