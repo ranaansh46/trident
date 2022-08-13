@@ -17,10 +17,6 @@ from hashlib import sha256
 import random
 import secrets
 
-
-
-
-
 def signup():
     """ Summary:
     This function is used to initiate database class and read username, pin and master password then writes
@@ -140,18 +136,6 @@ def addpasswd(username,pin,db,check:bool=True):
     _key = _init_crypto.makekey()
     _xor_passwd= _init_crypto.xorthese(password,_key)
     db.intovalue(_sno,website,_username,_xor_passwd)
-
-def passGenerator():
-    randomUppercase = ''.join(secrets.choice(string.ascii_uppercase) for _ in range(numberOfUpperCase))
-    randomLowercase = ''.join(secrets.choice(string.ascii_lowercase) for _ in range(numberOfLowerCase))
-    randomDigits = ''.join(secrets.choice(string.digits) for _ in range(numberOfDigits))
-    randomSpecialCharacters = ''.join(secrets.choice(specialCharacters) for _ in range(numberOfSpecialCharacters))
-
-    tempStr = randomUppercase + randomLowercase + randomDigits + randomSpecialCharacters
-    finalString = list(tempStr)
-    random.shuffle(finalString)
-    # print(''.join(finalString))
-    return ''.join(finalString)
 
 def rempasswd(username,pin,db):
     """
