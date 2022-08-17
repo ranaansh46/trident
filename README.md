@@ -5,3 +5,4 @@ cryptography tool
 - [ ] Implement checks
 - [ ] Improve program flow
 - [ ] Implement GUI for next version
+- [ ] Implement master password
