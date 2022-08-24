@@ -6,11 +6,9 @@ class Cryptograph:
         self.tri = "key"
         self.key = "key"
 
-    def binthis(self,tri): #this function takes a string and returns a binary string
+    def binthis(self,tri): 
         return "".join(f"{ord(i):08b}" for i in tri)
-    def makekey(self): #this function makes binary key using two arguments
-        # 1st = username which is a string argument  
-        # 2nd = Pin which is an integer argument and makes a binary key using both of these
+    def makekey(self): 
         key =str(self.pin) + self.username 
         _key = Cryptograph.binthis(self,tri=key)
         return _key
@@ -34,13 +32,6 @@ class Cryptograph:
                     result += "0"
                 else:
                     result += "1"
-        
-        # print(len(password),password)
-        # print(len(self.key),self.key)
-
-        
-        # print(self.key)
-        # print(password)
         return result
 
     def charthis(self,_bytes):
