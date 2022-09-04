@@ -46,23 +46,16 @@ def signup():
             break
     
     while True:
-        masterpassword = Prompt.ask("[bold]Enter master password[/bold]")
-       
-        if len(masterpassword)<8:
-            print("Master password must have atleast 8 characters!")
-            continue
-        else:
-            _hash = sha256(masterpassword.encode('utf-8')).hexdigest()
-            db.createmasterpwd(_hash)
-            break  
-    
-    while True:
         pin = int(Prompt.ask("[bold]Enter your pin[/bold]"))   
         if len(str(pin))<4:
             print("pin must have atleast 4 characters!")
             continue
         else:
-            break       
+            break
+    _init_crypto = cryptograph.Cryptograph(username,pin)
+    _key = _init_crypto.makekey()
+    _hash = sha256(_key.encode('utf-8')).hexdigest()
+    db.createmasterpwd(_hash)
     return db,username,pin
 
 def signin():
@@ -76,11 +69,12 @@ def signin():
     while True:
         username = Prompt.ask("[bold]Enter username")
         if os.path.isfile(f"{username}.db"): #to check is  database file  for username already exists
+            pin = int(Prompt.ask("[bold]Enter your pin"))
             db = models.Database0x(username)
-            masterpassword = Prompt.ask("[bold]Enter master password")
-            _hash = sha256(masterpassword.encode('utf-8')).hexdigest()
+            _init_crypto = cryptograph.Cryptograph(username,pin)
+            _key = _init_crypto.makekey()
+            _hash = sha256(_key.encode('utf-8')).hexdigest()
             if _hash == db.returnhash():
-                pin = int(Prompt.ask("[bold]Enter your pin"))
                 return db,username,pin
             else:
                 rich.print("[red bold]Wrong credentials!!")
