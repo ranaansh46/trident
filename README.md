@@ -1,8 +1,8 @@
 # Trident Password Manager (TPM)
-TPM is a tool to store your password by securing it through cryptography
+We use a serverless database to store your passwords and then we secure them using Xor encryption.
 ***
 ## Important instructions
-> 1. Please note your pin, masterpassword and username after signup.
+> 1. Please note your pin and username after signup.
 > 1. Do not share your pin / password with anyone.
 > 1. Install all the required modules in ***requirments.txt*** for hasle free experience.
 > 1. To run the program use ***main.py*** .
@@ -58,15 +58,4 @@ def createtable(self):
         self.conn.commit()
 ```
 ### 3. Master password 
-```py 
-masterpassword = Prompt.ask("[bold]Enter master password[/bold]")
-       
-if len(masterpassword)<8:
-    print("Master password must have atleast 8 characters!")
-    continue
-else:
-    _hash = sha256(masterpassword.encode('utf-8')).hexdigest()
-    db.createmasterpwd(_hash)
-    break
-```
->To add some security to the password manager we ask user to add a **Master Password** this password is stored as a hash in the database, this password is required at every signin later.
+>Username and pin are combined and converted into hash which is stored in the masterpassword table of database, this is later used for the authentication purposes.
