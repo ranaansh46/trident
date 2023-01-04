@@ -27,7 +27,7 @@ def signup():
         String : Username string is returned, this object is used as the database file name and part of the key.
         Int : pin is returned this number is later used as part of key.
     """
-    print("[bold red]Important! please note your pin and master password as you cannot change them in future") 
+    print("[bold red]Important! please note your pin and username as you cannot change them in future") 
     x = compile('[@_!#$%^&*()<>?/\|}{~:]')
     while True:
         username = Prompt.ask("[bold]Enter username")
@@ -183,7 +183,7 @@ if __name__ == "__main__":
     else: #this is sign in section
         db,username,pin = signin()
         while True:
-            choice = Prompt.ask("Show: s / Edit: e / Exit: x",choices=['s','e','x'],default='s')
+            choice = Prompt.ask("Edit: e / Show: s / Exit: x",choices=['e','s','x'],default='s')
             if choice == 's':
                 showpasswd(db,username,pin)
             elif choice == 'e':
