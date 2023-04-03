@@ -46,8 +46,8 @@ def signup():
             break
     
     while True:
-        pin = int(Prompt.ask("[bold]Enter your pin[/bold]"))   
-        if len(str(pin))<4:
+        pin = str(Prompt.ask("[bold]Enter your pin[/bold]"))   
+        if len(pin)<4:
             print("pin must have atleast 4 characters!")
             continue
         else:
@@ -69,7 +69,7 @@ def signin():
     while True:
         username = Prompt.ask("[bold]Enter username")
         if os.path.isfile(f"{username}.db"): #to check is  database file  for username already exists
-            pin = int(Prompt.ask("[bold]Enter your pin"))
+            pin = str(Prompt.ask("[bold]Enter your pin"))
             db = models.Database0x(username)
             _init_crypto = cryptograph.Cryptograph(username,pin)
             _key = _init_crypto.makekey()
