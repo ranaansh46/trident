@@ -9,7 +9,7 @@ class Cryptograph:
     def binthis(self,tri): 
         return "".join(f"{ord(i):08b}" for i in tri)
     def makekey(self): 
-        key =str(self.pin) + self.username 
+        key = self.pin + self.username 
         _key = Cryptograph.binthis(self,tri=key)
         return _key
     
